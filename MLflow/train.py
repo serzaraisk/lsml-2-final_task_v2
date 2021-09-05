@@ -3,6 +3,7 @@ import sys
 import warnings
 import pandas as pd
 from sklearn.metrics import accuracy_score
+import json
 
 import mlflow as mlflow
 import numpy as np
@@ -94,42 +95,36 @@ def train(model, train_loader, epochs, optimizer, loss_fn, device):
         print("Epoch: {}, BCELoss: {}".format(epoch, total_loss / len(train_loader)))
 
 
-def predict(input_data, model, word_dict):
+def predict(data, model):
     from prepare_data import convert_and_pad, review_to_words
     print('Inferring sentiment of input data.')
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    data_X, data_len = convert_and_pad(word_dict, review_to_words(input_data))
-    data_X, data_len = np.array(data_X), np.array(data_len)
-    data_pack = np.hstack((data_len, data_X))
-    data_pack = data_pack.reshape(1, -1)
-
-    data = torch.from_numpy(data_pack)
     data = data.to(device)
 
     model.eval()
 
-    result = torch.round(model(data)).item()
+    result = torch.round(model(data)).cpu().detach().numpy()
 
     return result
 
 
 if __name__ == "__main__":
-    #MLFLOW_SERVER_URL = 'http://192.168.1.105:8000/'
-    #mlflow.set_tracking_uri(MLFLOW_SERVER_URL)
-    #experiment_name = 'LSML2'
-    #mlflow.set_experiment(experiment_name)
+    mlflow.set_tracking_uri("databricks")
+    mlflow.set_experiment("/Users/serzaraisk@yandex.ru/LSML2_final")
 
     warnings.filterwarnings("ignore")
     np.random.seed(40)
+    
+    print(sys.argv)
 
-    max_epochs = float(sys.argv[1]) if len(sys.argv) > 1 else 1
-    batch_size = float(sys.argv[2]) if len(sys.argv) > 2 else 64
+    max_epochs = int(sys.argv[1]) if len(sys.argv) > 1 else 1
+    batch_size = int(sys.argv[2]) if len(sys.argv) > 2 else 64
     learning_rate = float(sys.argv[3]) if len(sys.argv) > 3 else 0.001
-    embeding_dim = float(sys.argv[4]) if len(sys.argv) > 4 else 32
-    hidden_dim = float(sys.argv[5]) if len(sys.argv) > 5 else 100
-    vocab_size = float(sys.argv[6]) if len(sys.argv) > 6 else 5000
+    embeding_dim = int(sys.argv[4]) if len(sys.argv) > 4 else 32
+    hidden_dim = int(sys.argv[5]) if len(sys.argv) > 5 else 100
+    vocab_size = int(sys.argv[6]) if len(sys.argv) > 6 else 5000
 
     data, labels = read_imdb_data(test_to_train_num=10000)
     train_X, test_X, train_y, test_y = prepare_imdb_data(data, labels)
@@ -159,6 +154,8 @@ if __name__ == "__main__":
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         optimizer = optim.Adam(model.parameters())
         loss_fn = torch.nn.BCELoss()
+        
+        model.to(device)
 
         print("Using device {}.".format(device))
         print("Model loaded with batch_size {}, learning_rate {}, "
@@ -168,8 +165,8 @@ if __name__ == "__main__":
 
         train(model, train_loader, max_epochs, optimizer, loss_fn, device)
 
-        predictions = predict(test_X, model, word_dict)
-        accuracy = accuracy_score(test_y, predictions)
+        predictions = predict(test_X, model)
+        accuracy = accuracy_score(test_y.detach().numpy(), predictions)
 
         print(" Accuracy: %s" % accuracy)
 
@@ -180,4 +177,11 @@ if __name__ == "__main__":
         mlflow.log_param("hidden_dim", hidden_dim)
         mlflow.log_param("vocab_size", vocab_size)
         mlflow.log_metric("Accuracy", accuracy)
-        mlflow.pytorch.log_model(model, "Classifier")
+        
+        model.to('cpu')
+        #torch.save(model.state_dict(), './model')
+        #print('Model was saved')
+        mlflow.pytorch.log_state_dict(model.state_dict(), "Classifier")
+        with open("word_dict.json", "w") as write_file:
+            json.dump(word_dict, write_file)
+        mlflow.log_artifact('word_dict.json')

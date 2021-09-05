@@ -10,11 +10,11 @@ import pickle
 import numpy as np
 from collections import Counter
 
-cache_dir = os.path.join("./cache", "sentiment_analysis")  # where to store cache files
+cache_dir = os.path.join("./MLflow/cache", "sentiment_analysis")  # where to store cache files
 os.makedirs(cache_dir, exist_ok=True)  # ensure cache directory exists
 
 
-def read_imdb_data(data_dir='./data', test_to_train_num=10000):
+def read_imdb_data(data_dir='./MLflow/data', test_to_train_num=10000):
     data = {}
     labels = {}
 

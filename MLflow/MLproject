@@ -14,10 +14,4 @@ entry_points:
 
 
     command: |
-          python train.py \
-            --max_epochs {max_epochs} \
-            --batch_size {batch_size} \
-            --lr {learning_rate} \
-            --embeding_dim {embeding_dim} \
-            --hidden_dim {hidden_dim} \
-            --vocab_size {vocab_size} \
+          python train.py {max_epochs} {batch_size} {learning_rate} {embeding_dim} {hidden_dim} {vocab_size}
