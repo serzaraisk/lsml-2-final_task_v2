@@ -144,13 +144,10 @@ if __name__ == "__main__":
     train_X = pd.concat([pd.DataFrame(train_X_len), pd.DataFrame(train_X)], axis=1)
     test_X = pd.concat([pd.DataFrame(test_X_len), pd.DataFrame(test_X)], axis=1)
 
-    train_X = torch.from_numpy(np.array(train_X)).float().squeeze()
-    test_X = torch.from_numpy(np.array(test_X)).float().squeeze()
+    train_X = torch.from_numpy(np.array(train_X)).long()
+    test_X = torch.from_numpy(np.array(test_X)).long()
     train_y = torch.from_numpy(np.array(train_y)).float().squeeze()
     test_y = torch.from_numpy(np.array(test_y)).float().squeeze()
-
-    print(train_X.shape)
-    print(train_y.shape)
 
     train_ds = torch.utils.data.TensorDataset(train_X, train_y)
     train_loader = torch.utils.data.DataLoader(train_ds, batch_size=batch_size)
