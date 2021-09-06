@@ -1,6 +1,6 @@
 # Design document and dataset description.
 
-For this final task I choose sentiment analysis task for movie review.
+For this final task I choose sentiment analysis task for movie review(I used model from [Udacity course](https://www.udacity.com/course/deep-learning-nanodegree--nd101), so it has other contributors).
 
 I will IMDB [dataset](https://www.kaggle.com/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews) for this task.
 
