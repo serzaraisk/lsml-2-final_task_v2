@@ -8,7 +8,7 @@ I will IMDB [dataset](https://www.kaggle.com/lakshmi25npathi/imdb-dataset-of-50k
 * As I'm using quite simple model (LSTM + Linear) and I have quite easy classification task (binary classification), I trained from scratch, using ML flow
 * I created account on databricks to track experiments here
 That is a proof that I had several runs within experiment:
-![Alt text](/databricks.jpg?raw=true "Optional Title")
+![Alt text](databricks.PNG?raw=true "Optional Title")
 * I'm using binary-cross entropy for this task, as It's a binary classification task
 * I trained embedings from scratch for this task
 * As this task is quite simple, with 5 epochs I get 85% accuracy score(I trained with GPU on Udacity, I had GPU hours from another program)
