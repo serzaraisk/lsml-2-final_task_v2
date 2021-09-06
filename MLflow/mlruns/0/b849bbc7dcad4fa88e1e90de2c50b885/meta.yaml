@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/spochukaev/PycharmProjects/lsml-2-final_task/MLflow/mlruns/0/b849bbc7dcad4fa88e1e90de2c50b885/artifacts
+end_time: 1630850712880
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: b849bbc7dcad4fa88e1e90de2c50b885
+run_uuid: b849bbc7dcad4fa88e1e90de2c50b885
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1630850118101
+status: 4
+tags: []
+user_id: spochukaev
